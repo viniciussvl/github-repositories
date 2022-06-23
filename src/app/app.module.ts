@@ -7,11 +7,13 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RepositoriesComponent } from './pages/repositories/repositories.component';
+import { SpinnerComponent } from './components/spinner/spinner.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    RepositoriesComponent
+    RepositoriesComponent,
+    SpinnerComponent
   ],
   imports: [
     BrowserModule,

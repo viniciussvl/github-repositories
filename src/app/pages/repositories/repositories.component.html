@@ -5,10 +5,13 @@
     <form class="mb-10">
         <div class="mb-3 row">
             <label for="table-complete-search" class="col-xs-3 col-sm-auto col-form-label">Buscar:</label>
-            <div class="col-xs-3 col-sm-auto">
+            <div class="col-md-3 col-sm-auto">
                 <input id="table-complete-search" placeholder="Nome do repositório" type="text" class="form-control" name="search" [(ngModel)]="pagination.search">
             </div>
-            <span class="col col-form-label" *ngIf="isLoading">Carregando...</span>
+
+            <div class="col-md-8">
+                <spinner-component *ngIf="isLoading" class="float-right"></spinner-component>
+            </div>
         </div>
     </form>
 
@@ -57,10 +60,10 @@
 
     <div class="d-flex justify-content-between p-2">
         <ngb-pagination
-            [collectionSize]="pagination.total" [(page)]="pagination.page" [pageSize]="pagination.per_page">
+            [collectionSize]="totalRepositories" [(page)]="pagination.page" [pageSize]="pagination.per_page" (pageChange)="getRepositories()">
         </ngb-pagination>
 
-        <select class="form-select custom-select" name="per_page" [(ngModel)]="pagination.per_page" (change)="onSelectPerPageSize($event)">
+        <select class="form-select custom-select" name="per_page" [(ngModel)]="pagination.per_page" (change)="getRepositories()">
             <option [value]="perPage" *ngFor="let perPage of perPages">
                 {{ perPage }} itens por página
             </option>

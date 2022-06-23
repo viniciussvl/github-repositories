@@ -9,39 +9,45 @@ import { IRepositoryModel } from './repository.interface';
 })
 export class RepositoriesComponent implements OnInit {
 
-  public isLoading: Boolean = true;
+  public isLoading: boolean = false;
+  public totalRepositories: number = 0;
   public pagination: any =  {
     page: 1,
-    per_page: 3,
-    total: 0,
+    per_page: 7,
     search: '',
     sort: 'created',
     direction: 'desc'
   };
 
-  public perPages: Array<Number> = [3, 5, 10];
+  public perPages: Array<Number> = [5, 7, 10];
   public repositories: Array<IRepositoryModel> = [];
 
   constructor(private githubService: GithubService) {}
 
   ngOnInit(): void {
+    this.getTotalRepositories();
     this.getRepositories();
   }
 
   getRepositories() {
+    this.isLoading = true;
     this.githubService.getRepositories(this.pagination).subscribe(repositories => {
       this.repositories = repositories;
+      this.isLoading = false;
+    },
+    error => {
+      this.isLoading = false;
+      console.log(error); 
     })
+  }
 
-    console.log(this.pagination);
+  getTotalRepositories() {
+    this.githubService.getTotalRepositories().subscribe(data => {
+      this.totalRepositories = data.public_repos;
+    })
   }
 
   onSort(event: any) {
     console.log(event);
-  }
-
-  onSelectPerPageSize(event: any) {
-    this.pagination.per_page = event.target.value;
-    this.getRepositories();
   }
 }

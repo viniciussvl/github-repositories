@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'https://api.github.com/users/viniciussvl/repos'
+  apiUrl: 'https://api.github.com/users/viniciussvl'
 };
 
 /*
