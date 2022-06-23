@@ -1,0 +1,72 @@
+<div class="container mt-35">
+    <h1>Listando repositórios do GitHub</h1>
+    <hr>
+
+    <form class="mb-10">
+        <div class="mb-3 row">
+            <label for="table-complete-search" class="col-xs-3 col-sm-auto col-form-label">Buscar:</label>
+            <div class="col-md-3 col-sm-auto">
+                <input id="table-complete-search" placeholder="Nome do repositório" type="text" class="form-control" name="search" [(ngModel)]="pagination.search">
+            </div>
+
+            <div class="col-md-8">
+                <spinner-component *ngIf="isLoading" class="float-right"></spinner-component>
+            </div>
+        </div>
+    </form>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col" sortable="name" (sort)="onSort($event)">Repositório</th>
+                <th scope="col">Público</th>
+                <th scope="col" sortable="description" (sort)="onSort($event)">Descrição</th>
+                <th scope="col" sortable="language" (sort)="onSort($event)">Linguagem</th>
+                <th scope="col" sortable="language" (sort)="onSort($event)">Data de criação</th>
+                <th scope="col" sortable="language" (sort)="onSort($event)">Data de atualização</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr *ngFor="let repo of repositories">
+                <td scope="row">{{ repo.id }}</td>
+                <td>
+                    <ngb-highlight [result]="repo.name" [term]="pagination.search"></ngb-highlight>
+                </td>
+
+                <td>
+                    {{ (!repo.private) ? 'Sim' : 'Não' }}
+                </td>
+
+                <td>
+                    <ngb-highlight [result]="repo.description" [term]="pagination.search"></ngb-highlight>
+                </td>
+
+                <td>
+                    <ngb-highlight [result]="repo.language" [term]="pagination.search"></ngb-highlight>
+                </td>
+
+                <td>
+                    {{ repo.created_at }}
+                </td>
+
+                <td>
+                    {{ repo.updated_at }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between p-2">
+        <ngb-pagination
+            [collectionSize]="totalRepositories" [(page)]="pagination.page" [pageSize]="pagination.per_page" (pageChange)="getRepositories()">
+        </ngb-pagination>
+
+        <select class="form-select custom-select" name="per_page" [(ngModel)]="pagination.per_page" (change)="getRepositories()">
+            <option [value]="perPage" *ngFor="let perPage of perPages">
+                {{ perPage }} itens por página
+            </option>
+        </select>
+    </div>
+</div>
