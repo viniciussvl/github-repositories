@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { GithubService } from 'src/app/services/github.service';
-import { RepositoryModel } from './repository.model';
+import { GithubService } from 'src/app/services/github/github.service';
+import { IRepositoryModel } from './repository.interface';
 
 @Component({
   selector: 'app-repositories',
@@ -12,13 +12,15 @@ export class RepositoriesComponent implements OnInit {
   public isLoading: Boolean = true;
   public pagination: any =  {
     page: 1,
-    limit: 10,
+    per_page: 3,
     total: 0,
-    search: ''
+    search: '',
+    sort: 'created',
+    direction: 'desc'
   };
 
-  public paginationLimits: Array<Number> = [3, 5, 10];
-  public repositories: Array<RepositoryModel> = [];
+  public perPages: Array<Number> = [3, 5, 10];
+  public repositories: Array<IRepositoryModel> = [];
 
   constructor(private githubService: GithubService) {}
 
@@ -27,9 +29,10 @@ export class RepositoriesComponent implements OnInit {
   }
 
   getRepositories() {
-    this.githubService.getRepositories().subscribe(repositories => {
+    this.githubService.getRepositories(this.pagination).subscribe(repositories => {
       this.repositories = repositories;
-    })  
+    })
+
     console.log(this.pagination);
   }
 
@@ -37,4 +40,8 @@ export class RepositoriesComponent implements OnInit {
     console.log(event);
   }
 
+  onSelectPerPageSize(event: any) {
+    this.pagination.per_page = event.target.value;
+    this.getRepositories();
+  }
 }

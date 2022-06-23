@@ -10,7 +10,9 @@ export class GithubService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getRepositories(): Observable<any> {
-    return this.httpClient.get(environment.apiUrl);
+  getRepositories(pagination: any): Observable<any> {
+    return this.httpClient.get(environment.apiUrl, {
+      params: pagination
+    });
   }
 }
