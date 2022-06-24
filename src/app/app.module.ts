@@ -8,12 +8,14 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RepositoriesComponent } from './pages/repositories/repositories.component';
 import { SpinnerComponent } from './components/spinner/spinner.component';
+import { MomentPipe } from './pipes/moment.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     RepositoriesComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    MomentPipe
   ],
   imports: [
     BrowserModule,

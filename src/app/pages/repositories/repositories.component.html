@@ -26,13 +26,12 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th scope="col">#</th>
+                <th scope="col" sortable="id">ID</th>
                 <th scope="col" sortable="name" (sort)="onSort($event)">Repositório</th>
                 <th scope="col">Público</th>
                 <th scope="col" sortable="description" (sort)="onSort($event)">Descrição</th>
-                <th scope="col" sortable="language" (sort)="onSort($event)">Linguagem</th>
-                <th scope="col" sortable="language" (sort)="onSort($event)">Data de criação</th>
-                <th scope="col" sortable="language" (sort)="onSort($event)">Data de atualização</th>
+                <th scope="col" sortable="created_at" (sort)="onSort($event)">Data de criação</th>
+                <th scope="col" sortable="updated_at" (sort)="onSort($event)">Data de atualização</th>
                 <th scope="col">Ações</th>
             </tr>
         </thead>
@@ -53,15 +52,11 @@
                 </td>
 
                 <td>
-                    <ngb-highlight [result]="repo.language" [term]="pagination.search"></ngb-highlight>
+                    {{ repo.created_at | moment }}
                 </td>
 
                 <td>
-                    {{ repo.created_at }}
-                </td>
-
-                <td>
-                    {{ repo.updated_at }}
+                    {{ repo.updated_at | moment }}
                 </td>
 
                 <td>

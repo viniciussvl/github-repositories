@@ -1,12 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Directive, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { GithubService } from 'src/app/services/github/github.service';
 import { IRepository } from './repository.interface';
+
 
 @Component({
   selector: 'app-repositories',
   templateUrl: './repositories.component.html',
   styleUrls: ['./repositories.component.css']
 })
+
+
 export class RepositoriesComponent implements OnInit {
 
   public isLoading: boolean = false;
@@ -23,6 +26,7 @@ export class RepositoriesComponent implements OnInit {
   };
 
   public perPages: Array<Number> = [5, 10, 15];
+  public originalRepositories: Array<IRepository> = [];
   public repositories: Array<IRepository> = [];
 
   constructor(private githubService: GithubService) {}
@@ -35,6 +39,7 @@ export class RepositoriesComponent implements OnInit {
     this.isLoading = true;
     this.githubService.getRepositories(this.queryParams).subscribe(repositories => {
       this.repositories = repositories;
+      this.originalRepositories = repositories;
       this.pagination.total = repositories.length;
       this.isLoading = false;
     },
@@ -48,13 +53,20 @@ export class RepositoriesComponent implements OnInit {
     console.log(event);
   }
 
-
   search(){
-    let text = this.queryParams.search;
-    if(text.length > 3){
+    let text = this.queryParams.search.toLowerCase();
+    if(text.length >= 3){
       this.repositories = this.repositories.filter(function(repo: any){
-        return repo.name.includes(text);
+        return repo.name.toLowerCase().includes(text) 
+        || repo.description.toLowerCase().includes(text);
       })
+
+      this.pagination.total = this.repositories.length;
+    }
+
+    if(text.length == 0) {
+      this.repositories = this.originalRepositories;
+      this.pagination.total = this.originalRepositories.length;
     }
   }
 }
