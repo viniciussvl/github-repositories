@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Directive, EventEmitter, Input, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { GithubService } from 'src/app/services/github/github.service';
 import { IRepository } from './repository.interface';
 
@@ -7,13 +7,13 @@ import { IRepository } from './repository.interface';
   templateUrl: './repositories.component.html',
   styleUrls: ['./repositories.component.css']
 })
-export class RepositoriesComponent implements OnInit {
 
+export class RepositoriesComponent implements OnInit {
   public isLoading: boolean = false;
   public page: number = 1;
   public queryParams: any =  {
     search: '',
-    sort: 'created',
+    sort: 'created_at',
     direction: 'desc'
   };
 
@@ -22,7 +22,10 @@ export class RepositoriesComponent implements OnInit {
     total: 0
   };
 
+  public filter: string = 'all';
+
   public perPages: Array<Number> = [5, 10, 15];
+  public originalRepositories: Array<any> = [];
   public repositories: Array<IRepository> = [];
 
   constructor(private githubService: GithubService) {}
@@ -33,8 +36,9 @@ export class RepositoriesComponent implements OnInit {
 
   getRepositories() {
     this.isLoading = true;
-    this.githubService.getRepositories(this.queryParams).subscribe(repositories => {
+    this.githubService.getRepositories().subscribe(repositories => {
       this.repositories = repositories;
+      this.originalRepositories = repositories;
       this.pagination.total = repositories.length;
       this.isLoading = false;
     },
@@ -44,17 +48,54 @@ export class RepositoriesComponent implements OnInit {
     })
   }
 
-  onSort(event: any) {
-    console.log(event);
-  }
-
-
   search(){
-    let text = this.queryParams.search;
-    if(text.length > 3){
+    const text = this.queryParams.search.toLowerCase();
+
+    if(text.length >= 3){
       this.repositories = this.repositories.filter(function(repo: any){
-        return repo.name.includes(text);
+        return repo.name.toLowerCase().includes(text) || repo.description.toLowerCase().includes(text);
       })
     }
+
+    if(text.length == 0) {
+      this.repositories = this.originalRepositories;
+    }
+
+    this.repositories = (this.filter != 'all') ? this.filterByField(this.repositories) : this.repositories;
+    this.pagination.total = this.repositories.length;
+  }
+  
+  onSort(column: string) {
+    this.queryParams.sort = column;
+    this.queryParams.direction = (this.queryParams.direction == 'desc') ? 'asc' : 'desc';
+    const direction = this.queryParams.direction;
+
+    this.repositories.sort(function(a: any, b: any) {  
+      let columnA = (column == 'id') ? a[column] : a[column].toLowerCase();
+      let columnB = (column == 'id') ? b[column] : b[column].toLowerCase();
+
+      if(direction == 'desc') {
+        return columnA > columnB ? 1 : -1
+      } else {
+        return columnA < columnB ? 1 : -1
+      }
+    });
+  }
+
+  onFilter(event: any): void {
+    const field = event.target.value;
+    this.filter = field;
+
+    this.repositories = this.originalRepositories;
+    this.search();
+  }
+
+  filterByField(repositories: any) {
+    const filter = this.filter;
+    const items = repositories.filter(function(repo: any){
+      return repo[filter] == true
+    })
+
+    return items;
   }
 }

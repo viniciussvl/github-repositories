@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api.github.com/users/viniciussvl/repos'
+  apiUrl: 'https://api.github.com/users/viniciussvl'
 };
