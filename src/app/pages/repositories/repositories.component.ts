@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GithubService } from 'src/app/services/github/github.service';
-import { IRepositoryModel } from './repository.interface';
+import { IRepository } from './repository.interface';
 
 @Component({
   selector: 'app-repositories',
@@ -10,29 +10,32 @@ import { IRepositoryModel } from './repository.interface';
 export class RepositoriesComponent implements OnInit {
 
   public isLoading: boolean = false;
-  public totalRepositories: number = 0;
-  public pagination: any =  {
-    page: 1,
-    per_page: 7,
+  public page: number = 1;
+  public queryParams: any =  {
     search: '',
     sort: 'created',
     direction: 'desc'
   };
 
-  public perPages: Array<Number> = [5, 7, 10];
-  public repositories: Array<IRepositoryModel> = [];
+  public pagination: any =  {
+    perPage: 8,
+    total: 0
+  };
+
+  public perPages: Array<Number> = [5, 10, 15];
+  public repositories: Array<IRepository> = [];
 
   constructor(private githubService: GithubService) {}
 
   ngOnInit(): void {
-    this.getTotalRepositories();
     this.getRepositories();
   }
 
   getRepositories() {
     this.isLoading = true;
-    this.githubService.getRepositories(this.pagination).subscribe(repositories => {
+    this.githubService.getRepositories(this.queryParams).subscribe(repositories => {
       this.repositories = repositories;
+      this.pagination.total = repositories.length;
       this.isLoading = false;
     },
     error => {
@@ -41,13 +44,17 @@ export class RepositoriesComponent implements OnInit {
     })
   }
 
-  getTotalRepositories() {
-    this.githubService.getTotalRepositories().subscribe(data => {
-      this.totalRepositories = data.public_repos;
-    })
-  }
-
   onSort(event: any) {
     console.log(event);
+  }
+
+
+  search(){
+    let text = this.queryParams.search;
+    if(text.length > 3){
+      this.repositories = this.repositories.filter(function(repo: any){
+        return repo.name.includes(text);
+      })
+    }
   }
 }

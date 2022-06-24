@@ -1,4 +1,4 @@
-export interface IRepositoryModel {
+export interface IRepository {
     id: number;
     name: string;
     description: string,
@@ -7,4 +7,5 @@ export interface IRepositoryModel {
     created_at: Date;
     updated_at: Date;
     language: string;
+    html_url: string;
 }
