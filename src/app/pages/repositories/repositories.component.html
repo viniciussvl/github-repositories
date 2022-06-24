@@ -10,7 +10,7 @@
             </div>
 
             <div class="col-md-8">
-                <select class="form-select custom-select">
+                <select class="form-select custom-select" (change)="onFilter($event)">
                     <option value="" selected disabled>Filtrar por</option>
                     <option [value]="'all'">Qualquer um</option>
                     <option [value]="'archived'">Arquivado</option>
@@ -26,12 +26,11 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th scope="col" sortable="id">ID</th>
-                <th scope="col" sortable="name" (sort)="onSort($event)">Repositório</th>
-                <th scope="col">Público</th>
-                <th scope="col" sortable="description" (sort)="onSort($event)">Descrição</th>
-                <th scope="col" sortable="created_at" (sort)="onSort($event)">Data de criação</th>
-                <th scope="col" sortable="updated_at" (sort)="onSort($event)">Data de atualização</th>
+                <th scope="col" (click)="onSort('id')">ID <i class="bi bi-caret-down-fill"></i></th>
+                <th scope="col" (click)="onSort('name')">Repositório <i class="bi bi-caret-down-fill"></i></th>
+                <th scope="col" (click)="onSort('description')">Descrição <i class="bi bi-caret-down-fill"></i></th>
+                <th scope="col" (click)="onSort('created_at')">Data de criação <i class="bi bi-caret-down-fill"></i></th>
+                <th scope="col" (click)="onSort('updated_at')">Data de atualização <i class="bi bi-caret-down-fill"></i></th>
                 <th scope="col">Ações</th>
             </tr>
         </thead>
@@ -41,10 +40,6 @@
                 <td scope="row">{{ repo.id }}</td>
                 <td>
                     <ngb-highlight [result]="repo.name" [term]="pagination.search"></ngb-highlight>
-                </td>
-
-                <td>
-                    {{ (!repo.private) ? 'Sim' : 'Não' }}
                 </td>
 
                 <td>
