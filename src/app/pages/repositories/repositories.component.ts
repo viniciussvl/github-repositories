@@ -51,14 +51,12 @@ export class RepositoriesComponent implements OnInit {
   search(){
     const text = this.queryParams.search.toLowerCase();
 
-    if(text.length >= 3){
+    this.repositories = this.originalRepositories;
+
+    if(text.length >= 1){
       this.repositories = this.repositories.filter(function(repo: any){
         return repo.name.toLowerCase().includes(text) || repo.description.toLowerCase().includes(text);
       })
-    }
-
-    if(text.length == 0) {
-      this.repositories = this.originalRepositories;
     }
 
     this.repositories = (this.filter != 'all') ? this.filterByField(this.repositories) : this.repositories;
